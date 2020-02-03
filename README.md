@@ -3,7 +3,7 @@
 A new Flutter project.
 
 ## Screenshot
-<img src="https://github.com/wakdyan/Flutter-Kompas-News-UI/blob/master/screenshot/flutter_01.png?raw=true" width="271" height="462" />
+<img src="https://github.com/wakdyan/Flutter-Kompas-News-UI/blob/master/screenshot/flutter_01.png?raw=true" width="271" height="462" /> <img src="https://github.com/wakdyan/Flutter-Kompas-News-UI/blob/master/screenshot/flutter_01.png?raw=true" width="271" height="462" /> <img src="https://github.com/wakdyan/Flutter-Kompas-News-UI/blob/master/screenshot/flutter_01.png?raw=true" width="271" height="462" />
 
 ## Getting Started
 
