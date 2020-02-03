@@ -1,6 +1,9 @@
-# kompas_app
+# Kompas News
 
 A new Flutter project.
+
+## Screenshot
+<img src="https://github.com/wakdyan/Flutter-Kompas-News-UI/blob/master/screenshot/flutter_01.png?raw=true" width="271" height="462" />
 
 ## Getting Started
 
@@ -15,4 +18,6 @@ For help getting started with Flutter, view our
 [online documentation](https://flutter.dev/docs), which offers tutorials,
 samples, guidance on mobile development, and a full API reference.
 
+## Original App
+[Kompas.com](https://play.google.com/store/apps/details?id=com.ertanto.kompas.official&hl=en_US)
 
