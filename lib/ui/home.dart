@@ -7,10 +7,9 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
-import '../../model/news.dart';
-import '../../utils/widget/drawer_menu.dart';
-import '../../utils/widget/search_page.dart';
-import '../detail/detail.dart';
+import '../model/news.dart';
+import '../utils/widget/drawer_menu.dart';
+import '../utils/widget/search_page.dart';
 
 class Home extends StatefulWidget {
   Home({Key key}) : super(key: key);
@@ -24,7 +23,7 @@ class _HomeState extends State<Home> {
 
   @override
   void initState() {
-    news = fetchNews();
+    news = _fetchNews();
 
     super.initState();
   }
@@ -53,7 +52,7 @@ class _HomeState extends State<Home> {
           if (snapshot.hasData) {
             return RefreshIndicator(
               onRefresh: () {
-                return fetchNews();
+                return _fetchNews();
               },
               child: CustomScrollView(
                 slivers: <Widget>[
@@ -69,80 +68,62 @@ class _HomeState extends State<Home> {
     );
   }
 
-  Widget buildListItem(AsyncSnapshot snapshot) {
-    return SliverToBoxAdapter(
-      child: ListView.separated(
-        itemCount: snapshot.data.length,
-        itemBuilder: (context, index) {
-          return GestureDetector(
-            onTap: () => Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (_) => Detail(snapshot.data[index].content),
-              ),
-            ),
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Container(
-                        width: MediaQuery.of(context).size.width / 1.6,
-                        child: Text(
-                          snapshot.data[index].title,
-                          maxLines: 3,
-                          softWrap: true,
-                        ),
+  SliverList buildListItem(AsyncSnapshot snapshot) {
+    return SliverList(
+      delegate: SliverChildBuilderDelegate(
+        (context, index) {
+          return Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Container(
+                      width: MediaQuery.of(context).size.width / 1.6,
+                      child: Text(
+                        snapshot.data[index].title,
+                        maxLines: 3,
+                        softWrap: true,
                       ),
-                      SizedBox(height: 25),
-                      Text(
-                        snapshot.data[index].author != null
-                            ? snapshot.data[index].author
-                            : "No Author",
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: Colors.black26,
-                        ),
-                      )
-                    ],
-                  ),
-                  Container(
-                    height: 90,
-                    width: 90,
-                    child: CachedNetworkImage(
-                      imageUrl: snapshot.data[index].urlToImage ?? 'null',
-                      fit: BoxFit.cover,
-                      errorWidget: (context, url, object) {
-                        return Image.asset('assets/image_placeholder.jpg');
-                      },
-                      placeholder: (context, string) =>
-                          Image.asset('assets/image_placeholder.jpg'),
                     ),
+                    SizedBox(height: 25),
+                    Text(
+                      snapshot.data[index].author != null
+                          ? snapshot.data[index].author
+                          : "No Author",
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Colors.black26,
+                      ),
+                    )
+                  ],
+                ),
+                Container(
+                  height: 90,
+                  width: 90,
+                  child: CachedNetworkImage(
+                    imageUrl: snapshot.data[index].urlToImage ?? 'null',
+                    fit: BoxFit.cover,
+                    errorWidget: (context, url, object) {
+                      return Image.asset('assets/image_placeholder.jpg');
+                    },
+                    placeholder: (context, string) =>
+                        Image.asset('assets/image_placeholder.jpg'),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           );
         },
-        separatorBuilder: (BuildContext context, int index) => Divider(),
+        childCount: snapshot.data.length,
       ),
     );
   }
 
-  Widget separatedLabel(String title) {
-    return Column(
-      children: <Widget>[
-        Text(title),
-        Divider(),
-      ],
-    );
-  }
-
-  Widget buildCarousel(AsyncSnapshot snapshot) {
+  SliverToBoxAdapter buildCarousel(AsyncSnapshot snapshot) {
     return SliverToBoxAdapter(
       child: CarouselSlider.builder(
         autoPlay: true,
@@ -152,8 +133,8 @@ class _HomeState extends State<Home> {
           return Stack(
             children: <Widget>[
               Container(
-                height: 200,
-                width: 300,
+                // height: 200,
+                width: 400,
                 child: Image.network(
                   snapshot.data[index].urlToImage,
                   fit: BoxFit.fill,
@@ -187,17 +168,26 @@ class _HomeState extends State<Home> {
       ),
     );
   }
+
+  Column separatedLabel(String title) {
+    return Column(
+      children: <Widget>[
+        Text(title),
+        Divider(),
+      ],
+    );
+  }
 }
 
-Future<List<News>> fetchNews() async {
+Future<List<News>> _fetchNews() async {
   final String url =
       "https://newsapi.org/v2/top-headlines?country=id&apiKey=674a9b8a1d504bdb94aee29e74c60bf7";
   final response = await http.get(url);
 
-  return compute(parseNews, response.body);
+  return compute(_parseNews, response.body);
 }
 
-List<News> parseNews(String responseBody) {
+List<News> _parseNews(String responseBody) {
   final parsed = jsonDecode(responseBody)['articles'];
 
   return parsed.map<News>((json) => News.fromJson(json)).toList();
