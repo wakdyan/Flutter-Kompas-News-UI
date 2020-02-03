@@ -133,8 +133,8 @@ class _HomeState extends State<Home> {
           return Stack(
             children: <Widget>[
               Container(
-                // height: 200,
-                width: 400,
+                height: 200,
+                width: 300,
                 child: Image.network(
                   snapshot.data[index].urlToImage,
                   fit: BoxFit.fill,
